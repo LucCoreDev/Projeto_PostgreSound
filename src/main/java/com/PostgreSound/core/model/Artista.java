@@ -14,12 +14,13 @@ public class Artista {
     @Column(name = "NomeDoArtista",unique = true)
     private String nome;
 
-    @OneToMany(mappedBy = "artista")
+    @OneToMany(mappedBy = "artista", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Musica> musicaList = new ArrayList<>();
 
-    public Artista(String nome, List<Musica> musicaList) {
+    public Artista(){}
+
+    public Artista(String nome) {
         this.nome = nome;
-        this.musicaList = musicaList;
     }
 
     public long getId() {
@@ -48,9 +49,13 @@ public class Artista {
 
     @Override
     public String toString() {
+        String titulos = musicaList.stream()
+                .map(Musica::getTitulo)
+                .reduce((a,b) -> a + "," + b)
+                .orElse("nenhuma musica registada");
         return "Artista{" +
-                ", nome='" + nome + '\'' +
-                ", musicaList=" + musicaList +
+                "nome='" + nome + '\'' +
+                ", nome das músicas: " + "[" + titulos +"]" +
                 '}';
     }
 }

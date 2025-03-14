@@ -24,6 +24,11 @@ public class Musica {
         this.genero = genero;
     }
 
+    public Musica(String titulo, Genero genero) {
+        this.titulo = titulo;
+        this.genero = genero;
+    }
+
     public long getId() {
         return id;
     }
@@ -45,8 +50,13 @@ public class Musica {
         return "Musica{" +
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
-                ", artista=" + artista +
+                ", artista=" + (artista != null ? artista.getNome() : "null") +
                 ", genero=" + genero +
                 '}';
+    }
+
+
+    public void setArtista(Artista artista) {
+        this.artista = artista;
     }
 }

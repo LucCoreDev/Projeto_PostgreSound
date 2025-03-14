@@ -1,11 +1,24 @@
 package com.PostgreSound.core.principal;
 
+import com.PostgreSound.core.model.Artista;
+import com.PostgreSound.core.model.Genero;
+import com.PostgreSound.core.model.Musica;
+import com.PostgreSound.core.repositorio.Repositorio;
+
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Aplicacao {
+    private final Repositorio repositorio;
+    
+    Scanner sc = new Scanner(System.in);
+    public Aplicacao(Repositorio repositorio) {
+        this.repositorio = repositorio;
+    }
+
     public void Menu() {
         int n = 0;
-        Scanner sc = new Scanner(System.in);
         System.out.println("""
                 Bem vindo ao PostgreSound !!!
                 
@@ -22,6 +35,7 @@ public class Aplicacao {
             System.out.println();
             System.out.print("Digite o número da opção: ");
             n = sc.nextInt();
+            sc.nextLine();
 
             switch (n) {
                 case 1:
@@ -45,4 +59,57 @@ public class Aplicacao {
             }
         }
     }
+
+    private void cadastrarArtista() {
+        var novoCadastro = "S";
+        while(novoCadastro.equalsIgnoreCase("s")) {
+            System.out.println("Informe o nome do artista:");
+            var nome = sc.nextLine();
+            Artista artista = new Artista(nome);
+            repositorio.save(artista);
+            System.out.println("Cadastrar um novo?(S/N)");
+            novoCadastro = sc.nextLine();
+        }
+    }
+
+    private void cadastrarMusica() {
+        System.out.println("Cadastrar música de que artista? ");
+        var nome = sc.nextLine();
+        Optional<Artista> artista = repositorio.findByNomeContainingIgnoreCase(nome);
+        if(artista.isPresent()){
+            System.out.println("Informe o título da música: ");
+            var titulo = sc.nextLine();
+            System.out.println("Qual desses gêneros ela se encaixa: POP/Rock/Funk");
+            var genero = sc.nextLine();
+            Genero generoMusica = Genero.valueOf(genero.toUpperCase());
+            Musica musica = new Musica(titulo,generoMusica);
+            musica.setArtista(artista.get());
+            artista.get().getMusicaList().add(musica);
+            repositorio.save(artista.get());
+        } else{
+            System.out.println("Artista não encontrado");
+        }
+    }
+
+    private void listarMusicas() {
+        List<Artista> artistaList = repositorio.findAll();
+        artistaList.forEach(System.out::println);
+    }
+
+    private void buscarMusicaPorArtista() {
+    }
+
+    private void buscarListaDeMusicaPorGenero() {
+    }
+
+    private void pesquisarSobreArtista() {
+    }
+
+
+
+
+
+
+
+
 }
